@@ -1,50 +1,49 @@
-# React + TypeScript + Vite
+Book Search React Application
+A React application to search for books using the Google Books API.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a simple and intuitive web application that allows users to search for books using the Google Books API. The application is built with React and provides a responsive and user-friendly interface.
 
-Currently, two official plugins are available:
+Features
+Search for books by title.
+View detailed information about each book.
+Responsive design for mobile and desktop users.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Getting Started
+Prerequisites
+Ensure you have the following installed on your machine:
 
-## Expanding the ESLint configuration
+Node.js (v14 or later)
+npm (v6 or later)
+Installation
+Clone the repository:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-- Configure the top-level `parserOptions` property like this:
+git clone git@github.com:Meshack-Odunowe/Book-search-react.git
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Navigate to the project directory:
+cd Book-search-react
+Install the dependencies:
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+npm install
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+
+Usage
+Before running the application, you need to configure the Google Books API key.
+
+API Key Configuration
+Create a .env file in the root of the project.
+
+Add the following line to the .env file:
+
+
+VITE_GOOGLE_BOOKS_API_KEY=AIzaSyCTMOLIWBUnhei8QGAmo-6dx4qs2tdaObk
+
+This API key allows the application to make requests to the Google Books API.
+
+Running the Application
+To start the development server, run: npm run dev
+
+
+
+This will start the server and you can view the application in your browser at http://localhost:5173.
