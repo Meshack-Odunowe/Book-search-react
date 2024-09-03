@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Book as BookIcon } from 'lucide-react';
-import { fetchBooks } from '../services/api';
-import { Book } from '../types/book';
 import GoBackButton from './GoBackButton';
 import SearchBar from './SearchBar';
-import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import BookCard from './BookCard';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
+import { fetchBooks } from '../services/api';
+import { Book } from '../types/book';
 
 const FeaturedBooks: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -23,7 +23,7 @@ const FeaturedBooks: React.FC = () => {
     try {
       const { items, totalItems } = await fetchBooks(search, startIndex);
       
-      if (totalItems === 0 || items.length === 0) {
+      if (totalItems === 0) {
         setError("No books found. Please try a different search term.");
         setBookData([]);
         setHasMore(false);
@@ -34,16 +34,18 @@ const FeaturedBooks: React.FC = () => {
       }
     } catch (err) {
       console.error('Error fetching books:', err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unexpected error occurred. Please try again later.");
-      }
-      setHasMore(false);
+      setError("An error occurred while fetching books. Please try again.");
     } finally {
       setIsLoading(false);
     }
   }, [search, startIndex, isLoading, hasMore]);
+
+  const [isFetching, setIsFetching] = useInfiniteScroll(loadMoreBooks);
+
+  useEffect(() => {
+    if (!isFetching) return;
+    loadMoreBooks().then(() => setIsFetching(false));
+  }, [isFetching, loadMoreBooks]);
 
   useEffect(() => {
     loadMoreBooks();
@@ -53,11 +55,8 @@ const FeaturedBooks: React.FC = () => {
     setBookData([]);
     setStartIndex(0);
     setHasMore(true);
-    setError("");
     loadMoreBooks();
   };
-
-  const infiniteScrollRef = useInfiniteScroll(loadMoreBooks);
 
   return (
     <main className="mt-20 px-4 max-w-5xl mx-auto">
@@ -73,7 +72,7 @@ const FeaturedBooks: React.FC = () => {
         </div>
       )}
 
-      {!error && bookData.length > 0 && (
+      {!error && (
         <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {bookData.map((book) => (
             <BookCard key={book.id} book={book} />
@@ -91,10 +90,6 @@ const FeaturedBooks: React.FC = () => {
         <p className="text-center mt-8 text-[#3e2f1c] italic">
           Showing all {bookData.length} books
         </p>
-      )}
-
-      {hasMore && !isLoading && (
-        <div ref={infiniteScrollRef} className="h-20 mt-8" />
       )}
     </main>
   );

@@ -1,49 +1,31 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
-interface UseInfiniteScrollOptions {
-  threshold?: number;
-  rootMargin?: string;
-}
+type SetIsFetchingFunction = React.Dispatch<React.SetStateAction<boolean>>;
 
-export const useInfiniteScroll = (
-  onIntersect: () => void,
-  options: UseInfiniteScrollOptions = {}
-) => {
-  const { threshold = 0.1, rootMargin = '0px' } = options;
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const elementRef = useRef<HTMLDivElement | null>(null);
+const useInfiniteScroll = (callback: () => void): [boolean, SetIsFetchingFunction] => {
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
-  const setRef = useCallback((node: HTMLDivElement | null) => {
-    if (node) {
-      elementRef.current = node;
-    }
-  }, []);
+  const isScrolling = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+        document.documentElement.offsetHeight ||
+      isFetching
+    )
+      return;
+    setIsFetching(true);
+  }, [isFetching]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const first = entries[0];
-        if (first.isIntersecting) {
-          onIntersect();
-        }
-      },
-      { threshold, rootMargin }
-    );
+    window.addEventListener("scroll", isScrolling);
+    return () => window.removeEventListener("scroll", isScrolling);
+  }, [isScrolling]);
 
-    observerRef.current = observer;
+  useEffect(() => {
+    if (!isFetching) return;
+    callback();
+  }, [isFetching, callback]);
 
-    const currentElement = elementRef.current;
-    if (currentElement) {
-      observer.observe(currentElement);
-    }
-
-    return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement);
-      }
-      observer.disconnect();
-    };
-  }, [onIntersect, threshold, rootMargin]);
-
-  return setRef;
+  return [isFetching, setIsFetching];
 };
+
+export default useInfiniteScroll;

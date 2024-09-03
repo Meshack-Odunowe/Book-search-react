@@ -1,25 +1,8 @@
 import React from 'react';
 import { Book as BookIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import{ BookCardProps} from '../types/book'
 
-// TypeScript interfaces
-interface VolumeInfo {
-  title: string;
-  authors?: string[];
-  imageLinks?: {
-    thumbnail: string;
-  };
-  publishedDate?: string;
-}
-
-interface Book {
-  id: string;
-  volumeInfo: VolumeInfo;
-}
-
-interface BookCardProps {
-  book: Book;
-}
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => (
   <Link to={`/books/${book.id}`} className="block rounded-md">
